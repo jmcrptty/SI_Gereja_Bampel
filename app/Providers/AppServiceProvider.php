@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use Carbon\Carbon;
 use Carbon\CarbonImmutable;
 use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\DB;
@@ -32,6 +33,10 @@ class AppServiceProvider extends ServiceProvider
     protected function configureDefaults(): void
     {
         Date::use(CarbonImmutable::class);
+
+        // Nama hari dan bulan dalam Bahasa Indonesia (Senin, Januari, ...).
+        Carbon::setLocale(config('app.locale'));
+        CarbonImmutable::setLocale(config('app.locale'));
 
         DB::prohibitDestructiveCommands(
             app()->isProduction(),

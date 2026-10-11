@@ -1,0 +1,78 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMax slice">
+  <!-- Latar sementara hero beranda. Ganti dengan foto gereja lewat Admin > Profil Gereja > Foto hero. -->
+  <defs>
+    <linearGradient id="langit" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#24140c"/>
+      <stop offset="0.45" stop-color="#5c3d27"/>
+      <stop offset="0.75" stop-color="#a8513a"/>
+      <stop offset="1" stop-color="#f4b860"/>
+    </linearGradient>
+    <radialGradient id="cahaya" cx="0.62" cy="0.78" r="0.45">
+      <stop offset="0" stop-color="#ffe2a8" stop-opacity="0.9"/>
+      <stop offset="1" stop-color="#ffe2a8" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="kaca" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#fcd34d"/>
+      <stop offset="1" stop-color="#f59e0b"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1600" height="900" fill="url(#langit)"/>
+  <rect width="1600" height="900" fill="url(#cahaya)"/>
+
+  <!-- Bintang -->
+  <g fill="#fff" opacity="0.7">
+    <circle cx="120" cy="80" r="1.6"/><circle cx="310" cy="150" r="1.2"/><circle cx="480" cy="60" r="1.8"/>
+    <circle cx="700" cy="120" r="1.2"/><circle cx="910" cy="50" r="1.5"/><circle cx="1120" cy="140" r="1.3"/>
+    <circle cx="1300" cy="70" r="1.7"/><circle cx="1480" cy="160" r="1.2"/><circle cx="220" cy="230" r="1"/>
+    <circle cx="1400" cy="250" r="1"/><circle cx="820" cy="210" r="1"/><circle cx="560" cy="250" r="0.9"/>
+  </g>
+
+  <!-- Bukit jauh -->
+  <path d="M0 700 C200 640 380 660 560 690 S900 640 1100 670 1450 650 1600 680 V900 H0Z" fill="#4a2c22" opacity="0.55"/>
+
+  <!-- Pohon kelapa kiri -->
+  <g fill="#1c0f08">
+    <path d="M190 900 C200 800 215 720 240 640 L250 642 C228 720 214 800 206 900Z"/>
+    <path d="M245 640 C200 610 150 615 110 640 C160 600 210 600 245 630Z"/>
+    <path d="M245 640 C230 590 200 560 160 545 C215 550 245 590 250 632Z"/>
+    <path d="M245 640 C280 600 330 590 375 605 C325 585 275 595 245 630Z"/>
+    <path d="M245 640 C290 640 330 665 350 700 C320 655 280 640 247 635Z"/>
+    <path d="M245 640 C215 660 195 690 190 725 C200 685 220 655 245 636Z"/>
+
+    <path d="M1420 900 C1412 810 1398 740 1375 680 L1365 683 C1385 745 1398 815 1404 900Z"/>
+    <path d="M1368 682 C1410 655 1455 658 1490 680 C1450 645 1405 645 1370 672Z"/>
+    <path d="M1368 682 C1385 640 1415 615 1450 605 C1400 605 1372 640 1365 675Z"/>
+    <path d="M1368 682 C1335 648 1290 640 1250 652 C1295 635 1340 645 1370 674Z"/>
+    <path d="M1368 682 C1395 700 1410 728 1414 760 C1404 724 1388 700 1367 678Z"/>
+  </g>
+
+  <!-- Gereja -->
+  <g fill="#1c0f08">
+    <!-- Menara -->
+    <rect x="905" y="470" width="110" height="330"/>
+    <path d="M895 475 L960 360 L1025 475Z"/>
+    <rect x="955" y="270" width="10" height="95"/>
+    <rect x="932" y="295" width="56" height="10"/>
+    <!-- Bangunan utama -->
+    <rect x="640" y="600" width="280" height="200"/>
+    <path d="M620 610 L780 500 L940 610Z"/>
+    <!-- Sayap samping -->
+    <rect x="1015" y="640" width="170" height="160"/>
+    <path d="M1005 648 L1100 590 L1195 648Z"/>
+  </g>
+
+  <!-- Jendela menyala -->
+  <g fill="url(#kaca)">
+    <circle cx="780" cy="575" r="20"/>
+    <path d="M700 650 h30 v60 h-30z M700 650 a15 15 0 0 1 30 0z"/>
+    <path d="M830 650 h30 v60 h-30z M830 650 a15 15 0 0 1 30 0z"/>
+    <path d="M945 520 h40 v70 h-40z M945 520 a20 20 0 0 1 40 0z"/>
+    <path d="M1050 680 h26 v50 h-26z M1050 680 a13 13 0 0 1 26 0z"/>
+    <path d="M1125 680 h26 v50 h-26z M1125 680 a13 13 0 0 1 26 0z"/>
+    <path d="M760 720 h40 v80 h-40z M760 720 a20 20 0 0 1 40 0z"/>
+  </g>
+
+  <!-- Tanah -->
+  <path d="M0 790 C300 770 600 785 900 790 S1400 775 1600 785 V900 H0Z" fill="#140a05"/>
+</svg>

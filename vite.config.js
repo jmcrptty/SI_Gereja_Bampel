@@ -16,6 +16,11 @@ export default defineConfig({
                 bunny('Instrument Sans', {
                     weights: [400, 500, 600],
                 }),
+                // Font serif untuk judul halaman publik.
+                bunny('Playfair Display', {
+                    weights: [500, 600, 700],
+                    styles: ['normal', 'italic'],
+                }),
             ],
         }),
         tailwindcss(),

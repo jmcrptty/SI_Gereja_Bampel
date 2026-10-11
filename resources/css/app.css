@@ -3,6 +3,7 @@
 
 @source '../views';
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
+@source '../../vendor/livewire/livewire/src/Features/SupportPagination/views/*.blade.php';
 @source '../../vendor/livewire/flux-pro/stubs/**/*.blade.php';
 @source '../../vendor/livewire/flux/stubs/**/*.blade.php';
 
@@ -10,29 +11,46 @@
 
 @theme {
     --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+    --font-serif: 'Playfair Display', ui-serif, Georgia, Cambria, 'Times New Roman', serif;
 
-    --color-zinc-50: #fafafa;
-    --color-zinc-100: #f5f5f5;
-    --color-zinc-200: #e5e5e5;
-    --color-zinc-300: #d4d4d4;
-    --color-zinc-400: #a3a3a3;
-    --color-zinc-500: #737373;
-    --color-zinc-600: #525252;
-    --color-zinc-700: #404040;
-    --color-zinc-800: #262626;
-    --color-zinc-900: #171717;
-    --color-zinc-950: #0a0a0a;
+    /* Palet gereja untuk halaman publik: krem, cokelat, dan aksen merah marun. */
+    --color-krem-50: #fdf9f3;
+    --color-krem-100: #f7efe2;
+    --color-krem-200: #efe1cb;
+    --color-krem-300: #e2cba9;
+    --color-coklat-400: #b08a68;
+    --color-coklat-500: #8c6647;
+    --color-coklat-700: #5c3d27;
+    --color-coklat-900: #3a2417;
+    --color-marun-500: #b13a3a;
+    --color-marun-600: #962d2d;
+    --color-marun-700: #7a2222;
 
-    --color-accent: var(--color-neutral-800);
-    --color-accent-content: var(--color-neutral-800);
-    --color-accent-foreground: var(--color-white);
+    /* Skala netral Flux (dashboard admin): krem lembut untuk latar, abu-abu hangat untuk teks & garis (tidak terlalu cokelat). */
+    --color-zinc-50: #fdfaf5;
+    --color-zinc-100: #f8f2e8;
+    --color-zinc-200: #eee4d4;
+    --color-zinc-300: #ddd0bb;
+    --color-zinc-400: #a8998a;
+    --color-zinc-500: #7d6f63;
+    --color-zinc-600: #5f534a;
+    --color-zinc-700: #4a3f37;
+    --color-zinc-800: #2f2722;
+    --color-zinc-900: #221c18;
+    --color-zinc-950: #15110e;
+
+    /* Warna utama Flux: marun. */
+    --color-accent: #7a2222;
+    --color-accent-content: #7a2222;
+    --color-accent-foreground: #ffffff;
 }
 
 @layer theme {
+    /* Mode gelap (termasuk sidebar admin yang selalu gelap): aksen krem. */
     .dark {
-        --color-accent: var(--color-white);
-        --color-accent-content: var(--color-white);
-        --color-accent-foreground: var(--color-neutral-800);
+        --color-accent: #e2cba9;
+        --color-accent-content: #e2cba9;
+        --color-accent-foreground: #3a2417;
     }
 }
 
@@ -45,6 +63,20 @@
     ::file-selector-button {
         border-color: var(--color-gray-200, currentColor);
     }
+}
+
+[x-cloak] {
+    display: none !important;
+}
+
+/* Judul halaman dashboard admin memakai font serif seperti halaman depan. */
+[data-flux-main] h1[data-flux-heading] {
+    @apply font-serif text-3xl font-semibold;
+}
+
+/* Bentuk jendela gereja: atas melengkung, bawah membulat halus. */
+.bentuk-jendela {
+    border-radius: 50% 50% 1.5rem 1.5rem / 32% 32% 1.5rem 1.5rem;
 }
 
 [data-flux-field]:not(ui-radio, ui-checkbox) {

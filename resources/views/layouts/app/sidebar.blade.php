@@ -1,32 +1,53 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="dark">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
     <head>
         @include('partials.head')
     </head>
-    <body class="min-h-screen bg-white dark:bg-zinc-800">
-        <flux:sidebar sticky collapsible="mobile" class="border-e border-zinc-200 bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-900">
+    <body class="min-h-screen bg-zinc-50 dark:bg-zinc-900">
+        {{-- Sidebar selalu gelap (class "dark") berwarna cokelat tua, senada dengan footer halaman depan. --}}
+        <flux:sidebar sticky collapsible="mobile" class="dark border-e border-coklat-700/60 bg-gradient-to-b from-coklat-900 to-[#24140c]">
             <flux:sidebar.header>
                 <x-app-logo :sidebar="true" href="{{ route('dashboard') }}" wire:navigate />
                 <flux:sidebar.collapse class="lg:hidden" />
             </flux:sidebar.header>
 
+            @php
+                $menuKelola = [
+                    ['route' => 'admin.profil-gereja', 'icon' => 'building-library', 'label' => 'Profil Paroki'],
+                    ['route' => 'admin.jadwal-misa', 'icon' => 'calendar-days', 'label' => 'Jadwal Misa'],
+                    ['route' => 'admin.warta', 'icon' => 'newspaper', 'label' => 'Warta'],
+                    ['route' => 'admin.kegiatan', 'icon' => 'megaphone', 'label' => 'Kegiatan'],
+                    ['route' => 'admin.dewan-paroki', 'icon' => 'user-group', 'label' => 'Dewan Paroki'],
+                    ['route' => 'admin.lingkungan', 'icon' => 'map', 'label' => 'Lingkungan'],
+                    ['route' => 'admin.galeri', 'icon' => 'photo', 'label' => 'Galeri'],
+                ];
+            @endphp
+
             <flux:sidebar.nav>
-                <flux:sidebar.group :heading="__('Platform')" class="grid">
-                    <flux:sidebar.item icon="home" :href="route('dashboard')" :current="request()->routeIs('dashboard')" wire:navigate>
-                        {{ __('Dashboard') }}
-                    </flux:sidebar.item>
+                <flux:sidebar.item icon="home" :href="route('dashboard')" :current="request()->routeIs('dashboard')" wire:navigate>
+                    Dashboard
+                </flux:sidebar.item>
+
+                <flux:sidebar.group heading="Kelola" class="grid">
+                    @foreach ($menuKelola as $menu)
+                        <flux:sidebar.item :icon="$menu['icon']" :href="route($menu['route'])" :current="request()->routeIs($menu['route'])" wire:navigate>
+                            {{ $menu['label'] }}
+                        </flux:sidebar.item>
+                    @endforeach
                 </flux:sidebar.group>
             </flux:sidebar.nav>
 
             <flux:spacer />
 
-            <flux:sidebar.nav>
-                <flux:sidebar.item icon="folder-git-2" href="https://github.com/laravel/livewire-starter-kit" target="_blank">
-                    {{ __('Repository') }}
-                </flux:sidebar.item>
+            {{-- Kartu ajakan melihat website --}}
+            <a href="{{ route('home') }}" target="_blank" class="mx-2 hidden rounded-xl bg-gradient-to-br from-marun-600 to-marun-700 p-4 text-krem-50 shadow-lg transition hover:from-marun-500 lg:block">
+                <p class="font-serif text-base font-semibold">Lihat Website</p>
+                <p class="mt-1 text-xs text-krem-200">Cek hasil perubahan seperti yang dilihat umat &rarr;</p>
+            </a>
 
-                <flux:sidebar.item icon="book-open-text" href="https://laravel.com/docs/starter-kits#livewire" target="_blank">
-                    {{ __('Documentation') }}
+            <flux:sidebar.nav class="lg:hidden">
+                <flux:sidebar.item icon="globe-alt" :href="route('home')" target="_blank">
+                    Lihat Website
                 </flux:sidebar.item>
             </flux:sidebar.nav>
 
@@ -34,7 +55,7 @@
         </flux:sidebar>
 
         <!-- Mobile User Menu -->
-        <flux:header class="lg:hidden">
+        <flux:header class="border-b border-zinc-200 bg-white/90 backdrop-blur lg:hidden">
             <flux:sidebar.toggle class="lg:hidden" icon="bars-2" inset="left" />
 
             <flux:spacer />

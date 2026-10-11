@@ -73,7 +73,7 @@ return [
     |
     */
 
-    'home' => '/dashboard',
+    'home' => '/admin',
 
     /*
     |--------------------------------------------------------------------------
@@ -161,7 +161,7 @@ return [
     */
 
     'features' => [
-        Features::registration(),
+        // Registrasi dimatikan: akun admin dibuat lewat seeder.
         Features::resetPasswords(),
         Features::emailVerification(),
         Features::twoFactorAuthentication([

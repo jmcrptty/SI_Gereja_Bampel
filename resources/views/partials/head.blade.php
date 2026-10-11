@@ -12,4 +12,13 @@
 @fonts
 
 @vite(['resources/css/app.css', 'resources/js/app.js'])
+
+{{--
+    Editor crop foto (komponen Alpine "pemotongFoto"). Sengaja script biasa (bukan module Vite) di <head>
+    agar terdaftar sebelum Livewire menyalakan Alpine; module Vite baru jalan setelah itu.
+--}}
+<script src="{{ asset('js/pemotong-foto.js') }}?v={{ filemtime(public_path('js/pemotong-foto.js')) }}"></script>
+
 @fluxAppearance
+{{-- Dashboard selalu tampil terang (krem), tidak mengikuti mode gelap sistem. Sidebar tetap cokelat lewat class "dark" miliknya sendiri. --}}
+<script>window.Flux.applyAppearance('light')</script>

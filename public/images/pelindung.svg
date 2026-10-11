@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 1000" preserveAspectRatio="xMidYMid slice">
+  <!-- Ilustrasi sementara santo/santa pelindung. Ganti lewat Admin > Profil Gereja > Foto pelindung. -->
+  <defs>
+    <linearGradient id="latar" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#7a2222"/>
+      <stop offset="0.55" stop-color="#5c3d27"/>
+      <stop offset="1" stop-color="#3a2417"/>
+    </linearGradient>
+    <radialGradient id="halo" cx="0.5" cy="0.3" r="0.45">
+      <stop offset="0" stop-color="#ffe9b8" stop-opacity="0.95"/>
+      <stop offset="0.35" stop-color="#f4b860" stop-opacity="0.55"/>
+      <stop offset="1" stop-color="#f4b860" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="jubah" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#2a170e"/>
+      <stop offset="1" stop-color="#140a05"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="800" height="1000" fill="url(#latar)"/>
+
+  <!-- Sinar -->
+  <g fill="#ffe9b8" opacity="0.08">
+    <path d="M400 300 L120 0 H220Z"/><path d="M400 300 L330 0 H470Z"/><path d="M400 300 L580 0 H680Z"/>
+    <path d="M400 300 L0 160 V260Z"/><path d="M400 300 L800 160 V260Z"/>
+  </g>
+  <rect width="800" height="1000" fill="url(#halo)"/>
+
+  <!-- Lingkaran halo -->
+  <circle cx="400" cy="300" r="125" fill="none" stroke="#fcd34d" stroke-width="6" opacity="0.85"/>
+  <circle cx="400" cy="300" r="140" fill="none" stroke="#fcd34d" stroke-width="2" opacity="0.4"/>
+
+  <!-- Sosok -->
+  <g fill="url(#jubah)">
+    <ellipse cx="400" cy="315" rx="78" ry="92"/>
+    <path d="M330 390 C300 420 250 450 225 520 C190 620 175 800 160 1000 H640 C625 800 610 620 575 520 C550 450 500 420 470 390 C450 405 425 412 400 412 C375 412 350 405 330 390Z"/>
+  </g>
+  <!-- Tangan berdoa -->
+  <path d="M385 560 C380 600 382 640 400 660 C418 640 420 600 415 560 C410 548 390 548 385 560Z" fill="#3a2417" stroke="#5c3d27" stroke-width="3"/>
+  <!-- Lipatan jubah -->
+  <g stroke="#3a2417" stroke-width="4" fill="none" opacity="0.8">
+    <path d="M300 620 C290 740 280 860 270 1000"/>
+    <path d="M500 620 C510 740 520 860 530 1000"/>
+    <path d="M400 680 C398 780 400 880 400 1000"/>
+  </g>
+</svg>

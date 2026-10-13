@@ -63,7 +63,7 @@ new #[Layout('layouts::publik')] #[Title('Dewan Paroki')] class extends Componen
                             <div class="relative mx-auto w-full max-w-[15rem]">
                                 <div class="bentuk-jendela absolute inset-0 translate-x-2 translate-y-2 border-2 border-coklat-400/60" aria-hidden="true"></div>
                                 @if ($orang->foto_url)
-                                    <img src="{{ $orang->foto_url }}" alt="{{ $orang->nama }}" class="bentuk-jendela relative aspect-[4/5] w-full object-cover shadow-xl" loading="lazy" width="480" height="600">
+                                    <img src="{{ $orang->foto_kecil_url }}" alt="{{ $orang->nama }}" class="bentuk-jendela relative aspect-[4/5] w-full object-cover shadow-xl" loading="lazy" width="480" height="600">
                                 @else
                                     <div class="bentuk-jendela relative flex aspect-[4/5] w-full items-center justify-center bg-gradient-to-b from-coklat-700 to-coklat-900 shadow-xl">
                                         <span class="font-serif text-6xl font-bold text-krem-200">{{ $this->inisial($orang->nama) }}</span>
@@ -87,7 +87,7 @@ new #[Layout('layouts::publik')] #[Title('Dewan Paroki')] class extends Componen
                             @foreach ($lainnya as $orang)
                                 <div wire:key="lain-{{ $orang->id }}" class="flex items-center gap-4">
                                     @if ($orang->foto_url)
-                                        <img src="{{ $orang->foto_url }}" alt="{{ $orang->nama }}" class="size-14 shrink-0 rounded-full object-cover ring-2 ring-krem-300" loading="lazy" width="56" height="56">
+                                        <img src="{{ $orang->foto_kecil_url }}" alt="{{ $orang->nama }}" class="size-14 shrink-0 rounded-full object-cover ring-2 ring-krem-300" loading="lazy" width="56" height="56">
                                     @else
                                         <div class="flex size-14 shrink-0 items-center justify-center rounded-full bg-krem-200 font-serif text-lg font-semibold text-marun-700">{{ $this->inisial($orang->nama) }}</div>
                                     @endif

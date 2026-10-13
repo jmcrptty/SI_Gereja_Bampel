@@ -9,6 +9,7 @@ use Illuminate\Support\Str;
 use Intervention\Image\Drivers\Gd\Driver;
 use Intervention\Image\Encoders\WebpEncoder;
 use Intervention\Image\ImageManager;
+use Intervention\Image\Interfaces\ImageInterface;
 
 /**
  * Menyimpan foto upload sebagai WebP (lebar maks 1600 px) di disk "public", dengan crop opsional.
@@ -93,7 +94,20 @@ trait KompresFoto
 
         Storage::disk('public')->put($path, $hasil->toString());
 
+        $this->simpanVersiKecil($gambar, Str::replaceLast('.webp', '_kecil.webp', $path));
+
         return $path;
+    }
+
+    /**
+     * Simpan versi kecil (lebar maks 600 px), contoh: galeri/abc_kecil.webp.
+     * Dipakai di grid dan kartu agar halaman ringan di internet lambat.
+     */
+    protected function simpanVersiKecil(ImageInterface $gambar, string $pathKecil): void
+    {
+        $hasil = $gambar->scaleDown(width: 600)->encode(new WebpEncoder(quality: 75));
+
+        Storage::disk('public')->put($pathKecil, $hasil->toString());
     }
 
     /**

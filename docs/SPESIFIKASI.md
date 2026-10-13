@@ -172,3 +172,67 @@ Belum (kerjakan berurutan):
 - [x] Komponen Livewire kelola: Settings, Jadwal Misa, Warta, Kegiatan, Pengurus, Lingkungan, Galeri, Dashboard Ringkasan
 - [x] Halaman publik (Livewire full-page component) sesuai bagian 3
 - [x] Hapus link/route "Register" yang masih muncul di view starter kit
+
+Sudah juga (dikerjakan setelah checklist di atas):
+- [x] Tag Open Graph & meta deskripsi di layout publik (gambar cadangan `public/images/og-default.png`)
+- [x] Halaman error Bahasa Indonesia (401, 403, 404, 419, 429, 500, 503) di `resources/views/errors/`
+- [x] `.env.example` diperbarui
+- [x] `docs/DEPLOY.md` (panduan cPanel)
+- [x] `AdminSeeder` memakai `firstOrCreate`
+
+## 11. Perbaikan Tahap 2 (hasil review kode, Oktober 2026)
+
+Kerjakan **berurutan**. Setiap poin: perbaiki → tambah/ubah test → jalankan `php artisan test` → centang. Jangan mengubah hal lain di luar poin yang sedang dikerjakan.
+
+### A. Penting
+
+- [x] **A1. Slug tidak boleh berubah saat judul diedit.**
+  Masalah: `app/Concerns/HasSlug.php` membuat slug baru setiap `judul` berubah, jadi link kegiatan yang sudah dibagikan ke WhatsApp menjadi 404.
+  Solusi: buat slug hanya saat `creating` (dan hanya bila `slug` masih kosong). Hapus kondisi `isDirty('judul')`.
+  Test: buat kegiatan, ubah judulnya, pastikan slug tetap sama dan URL lama masih 200.
+
+- [x] **A2. Thumbnail foto ringan untuk internet lambat.**
+  Masalah: grid galeri, galeri beranda, kartu kegiatan, dan foto pengurus memakai foto penuh (lebar 1600 px).
+  Solusi (tanpa kolom baru):
+  - Di `app/Concerns/KompresFoto.php` (`simpanFotoWebp`), setelah menyimpan foto utama, simpan juga versi kecil lebar maks **600 px** dengan nama yang sama ditambah akhiran `_kecil` (contoh `galeri/abc.webp` → `galeri/abc_kecil.webp`).
+  - Di `app/Concerns/HasFileCleanup.php`, saat file dihapus/diganti, hapus juga pasangan `_kecil`-nya.
+  - Tambah helper `fileUrlKecil($kolom)` di `HasFileCleanup` yang mengembalikan URL versi kecil bila ada, jika tidak ada kembali ke foto penuh (agar data lama tetap tampil). Tambah accessor `foto_kecil_url` di `Galeri`, `Kegiatan`, `Pengurus`.
+  - Pakai versi kecil di: grid `pages/publik/⚡galeri.blade.php`, galeri di `⚡beranda.blade.php`, kartu kegiatan (`components/publik/kartu-kegiatan.blade.php` dan card hero), foto di `⚡dewan-paroki.blade.php` publik, dan tabel/preview di halaman admin. Foto penuh tetap dipakai di lightbox galeri, hero, dan halaman detail kegiatan.
+  - Opsional: perintah artisan `foto:buat-thumbnail` untuk membuat versi kecil dari foto yang sudah ada.
+  Test: upload foto → kedua file ada di disk; hapus data → kedua file terhapus.
+
+- [x] **A3. Tombol "Hapus foto".**
+  Masalah: foto kegiatan, foto pengurus, serta logo/foto hero/foto gereja/foto pelindung di Profil Paroki hanya bisa diganti, tidak bisa dikosongkan.
+  Solusi: tambah tombol "Hapus foto" (dengan konfirmasi) di form masing-masing yang mengisi kolom menjadi `null`. File lama otomatis terhapus lewat `HasFileCleanup`. Bisa dibuat sebagai opsi di komponen `<x-admin.unggah-foto>` agar dipakai ulang.
+  Test: hapus foto → kolom null, file di disk terhapus, halaman publik memakai gambar/ikon default.
+
+- [x] **A4. Upload galeri aman di shared hosting.**
+  Masalah: sampai 20 foto dikompres dalam satu request; di hosting `max_execution_time` biasanya 30 detik sehingga bisa berhenti di tengah.
+  Solusi: di `pages/admin/⚡galeri.blade.php` ubah batas `fotos` menjadi `max:10` (dan teks bantuannya), lalu panggil `set_time_limit(120)` di awal `simpan()`.
+  Test: validasi menolak 11 foto.
+
+### B. Bug kecil
+
+- [x] **B1. Hitungan "Misa aktif" di dashboard.** Di `pages/admin/⚡dashboard.blade.php`, hitung `JadwalMisa::aktif()->rutin()->count()` + `JadwalMisa::aktif()->khusus()->whereDate('tanggal', '>=', today())->count()` (misa hari raya yang sudah lewat tidak dihitung). Test di `DashboardRingkasanTest`.
+
+- [x] **B2. "Misa berikutnya" ikut mempertimbangkan misa hari raya.** Di `pages/publik/⚡jadwal-misa.blade.php` (`misaBerikutnya`), bandingkan misa rutin berikutnya dengan misa khusus aktif terdekat (tanggal + jam ≥ sekarang), tampilkan yang paling dekat. Sesuaikan teks "Hari ini / Besok / tanggal" untuk misa khusus. Test dengan `Carbon::setTestNow()`.
+
+- [x] **B3. Card hero "Jadwal Misa Minggu Ini"** jangan menampilkan misa rutin hari ini yang jamnya sudah lewat. Ubah `JadwalMisa::untukCardHero()` di `app/Models/JadwalMisa.php`: misa hari ini dengan `jam` < sekarang dipindah ke urutan paling akhir (minggu depan) atau dilewati. Test dengan `Carbon::setTestNow()`.
+
+- [x] **B4. Statistik "Wilayah" di halaman Lingkungan** jangan menghitung kelompok "Lainnya" (lingkungan tanpa wilayah). File: `pages/publik/⚡lingkungan.blade.php`.
+
+### C. Kenyamanan admin & umat
+
+- [x] **C1. Daftar Jadwal Misa di admin:** tampilkan badge "Sudah lewat" untuk misa khusus yang tanggalnya < hari ini. Pencarian juga menemukan misa rutin berdasarkan nama hari (ubah kata "Minggu", "Senin", dst. ke angka 1–7 lalu cari di kolom `hari`).
+
+- [x] **C2. Nama file PDF warta yang mudah dibaca.** Simpan dengan `storeAs('warta', Str::slug($judul).'-'.Str::lower(Str::random(6)).'.pdf', 'public')` di `pages/admin/⚡warta.blade.php`. File lama tidak perlu diubah.
+
+- [x] **C3. Ikon media sosial yang kosong disembunyikan** di footer `layouts/publik.blade.php` (hapus tampilan "segera hadir").
+
+### D. Sisa pekerjaan sebelumnya
+
+- [ ] **D1. Favicon paroki:** ganti `public/favicon.ico`, `public/favicon.svg`, `public/apple-touch-icon.png` dengan logo paroki (minta file logo ke Jm bila belum ada; jika belum ada, lewati dan beri catatan).
+  *Catatan (12 Okt 2026): dilewati. Belum ada file logo resmi; kolom `settings.logo` saat ini berisi gambar Santo Yoseph (400×400 WebP), bukan logo. Layout publik sudah memakai logo upload sebagai ikon tab bila ada. Kirim file logo (sebaiknya SVG atau PNG persegi ≥ 512 px) untuk membuat ketiga file favicon.*
+- [x] **D2. DEPLOY.md bagian 7:** tambahkan urutan aman setelah online: (1) pastikan SMTP berfungsi, (2) ganti kata sandi admin, (3) baru ganti email admin. Alasan: model `User` memakai verifikasi email, dan mengganti email membuat status belum terverifikasi sehingga halaman Keamanan terkunci sampai email verifikasi diklik.
+- [x] **D3. Bersihkan sisa registrasi:** hapus `tests/Feature/Auth/RegistrationTest.php`, `resources/views/pages/auth/register.blade.php`, `app/Actions/Fortify/CreateNewUser.php`, serta baris `Fortify::registerView(...)` dan `Fortify::createUsersUsing(...)` di `app/Providers/FortifyServiceProvider.php`.
+- [x] **D4. Akhir:** jalankan `php artisan test` dan `vendor/bin/pint`, pastikan semua lolos, lalu centang poin-poin di atas.

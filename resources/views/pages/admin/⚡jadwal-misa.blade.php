@@ -34,10 +34,17 @@ new #[Title('Jadwal Misa')] class extends Component {
     #[Computed]
     public function daftarMisa()
     {
+        // Nama hari yang diawali kata pencarian (contoh: "ming" → 7) agar misa rutin juga bisa dicari.
+        $hariCocok = array_keys(array_filter(
+            JadwalMisa::HARI,
+            fn (string $namaHari) => str_starts_with(mb_strtolower($namaHari), mb_strtolower(trim($this->cari))),
+        ));
+
         return JadwalMisa::query()
             ->when($this->cari !== '', fn ($q) => $q->where(fn ($q) => $q
                 ->where('nama_perayaan', 'like', "%{$this->cari}%")
-                ->orWhere('tempat', 'like', "%{$this->cari}%")))
+                ->orWhere('tempat', 'like', "%{$this->cari}%")
+                ->when($hariCocok, fn ($q) => $q->orWhereIn('hari', $hariCocok))))
             ->orderBy('jenis')
             ->orderBy('hari')
             ->orderByDesc('tanggal')
@@ -131,7 +138,7 @@ new #[Title('Jadwal Misa')] class extends Component {
         <flux:button variant="primary" icon="plus" wire:click="tambah">Tambah Misa</flux:button>
     </div>
 
-    <flux:input wire:model.live.debounce.400ms="cari" icon="magnifying-glass" placeholder="Cari nama perayaan atau tempat..." class="mt-6 max-w-sm" />
+    <flux:input wire:model.live.debounce.400ms="cari" icon="magnifying-glass" placeholder="Cari hari, nama perayaan, atau tempat..." class="mt-6 max-w-sm" />
 
     <flux:table :paginate="$this->daftarMisa" class="mt-4">
         <flux:table.columns>
@@ -156,6 +163,9 @@ new #[Title('Jadwal Misa')] class extends Component {
                     <flux:table.cell variant="strong">
                         @if ($misa->jenis === \App\Models\JadwalMisa::KHUSUS)
                             {{ $misa->nama_perayaan }}
+                            @if ($misa->tanggal?->lt(today()))
+                                <flux:badge color="zinc" size="sm" class="ms-1">Sudah lewat</flux:badge>
+                            @endif
                             <span class="block text-xs font-normal text-zinc-500">{{ $misa->tanggal?->translatedFormat('l, j F Y') }}</span>
                         @else
                             {{ $misa->nama_hari }}

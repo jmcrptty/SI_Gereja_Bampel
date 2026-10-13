@@ -76,7 +76,7 @@ new #[Layout('layouts::publik')] class extends Component {
         @if ($this->setting->tampil_card_misa || $this->setting->tampil_card_kegiatan)
             <div class="mx-auto w-full max-w-6xl px-4 pb-8 sm:pb-12">
                 <div @class([
-                    'grid gap-4',
+                    'grid grid-cols-1 gap-4',
                     'md:grid-cols-2' => $this->setting->tampil_card_misa && $this->setting->tampil_card_kegiatan,
                     'md:max-w-xl' => ! ($this->setting->tampil_card_misa && $this->setting->tampil_card_kegiatan),
                 ])>
@@ -117,7 +117,7 @@ new #[Layout('layouts::publik')] class extends Component {
                             <a href="{{ route('kegiatan.show', $kegiatan) }}" wire:navigate
                                class="group flex items-center gap-4 rounded-2xl bg-white/70 p-4 shadow-xl ring-1 ring-white/50 backdrop-blur-md transition hover:bg-white/85 sm:p-5">
                                 @if ($kegiatan->foto_url)
-                                    <img src="{{ $kegiatan->foto_url }}" alt="" class="size-16 shrink-0 rounded-xl object-cover sm:size-20" width="80" height="80">
+                                    <img src="{{ $kegiatan->foto_kecil_url }}" alt="" class="size-16 shrink-0 rounded-xl object-cover sm:size-20" width="80" height="80">
                                 @else
                                     <div class="flex size-16 shrink-0 items-center justify-center rounded-xl bg-marun-700/10 text-marun-700 sm:size-20">
                                         <x-publik.ikon-kegiatan class="size-8 sm:size-10" />
@@ -277,7 +277,7 @@ new #[Layout('layouts::publik')] class extends Component {
                                 </div>
 
                                 @if ($kegiatan->foto_url)
-                                    <img src="{{ $kegiatan->foto_url }}" alt="" class="hidden size-16 shrink-0 rounded-xl object-cover sm:block" loading="lazy" width="64" height="64">
+                                    <img src="{{ $kegiatan->foto_kecil_url }}" alt="" class="hidden size-16 shrink-0 rounded-xl object-cover sm:block" loading="lazy" width="64" height="64">
                                 @endif
                             </a>
                         @empty
@@ -344,7 +344,7 @@ new #[Layout('layouts::publik')] class extends Component {
                 {{-- 3 kolom: 3 foto di atas, 3 di bawah --}}
                 <div class="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4">
                     @forelse ($this->galeriTerbaru as $foto)
-                        <img wire:key="galeri-{{ $foto->id }}" src="{{ $foto->foto_url }}" alt="{{ $foto->judul }}"
+                        <img wire:key="galeri-{{ $foto->id }}" src="{{ $foto->foto_kecil_url }}" alt="{{ $foto->judul }}"
                              class="aspect-[4/3] w-full rounded-xl object-cover shadow-sm" loading="lazy" width="600" height="450">
                     @empty
                         <p class="col-span-full rounded-2xl border border-dashed border-coklat-400/50 p-6 text-center text-coklat-500">Belum ada foto.</p>

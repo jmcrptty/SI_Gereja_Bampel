@@ -108,6 +108,21 @@ new #[Title('Profil Paroki')] class extends Component {
 
         Flux::toast(variant: 'success', text: 'Profil paroki disimpan.');
     }
+
+    /**
+     * Kosongkan satu kolom foto; file lama dihapus oleh HasFileCleanup, website kembali memakai gambar default.
+     */
+    public function hapusFoto(string $kolom): void
+    {
+        abort_unless(in_array($kolom, self::KOLOM_FOTO, true), 404);
+
+        Setting::current()->update([$kolom => null]);
+
+        $this->reset($kolom);
+        unset($this->potong[$kolom]);
+
+        Flux::toast(variant: 'success', text: 'Foto dihapus.');
+    }
 }; ?>
 
 <section class="w-full">
@@ -117,6 +132,8 @@ new #[Title('Profil Paroki')] class extends Component {
         $pratinjau = fn (string $kolom) => $this->{$kolom}?->isPreviewable()
             ? $this->{$kolom}->temporaryUrl()
             : $setting->fileUrl($kolom);
+        // Aksi tombol "Hapus foto", hanya bila foto sudah tersimpan.
+        $hapus = fn (string $kolom) => $setting->{$kolom} ? "hapusFoto('{$kolom}')" : null;
     @endphp
 
     <div class="flex flex-wrap items-end justify-between gap-4">
@@ -134,15 +151,15 @@ new #[Title('Profil Paroki')] class extends Component {
                 <flux:input wire:model="nama_gereja" label="Nama paroki" required />
 
                 <div class="grid gap-5 sm:grid-cols-3">
-                    <x-admin.unggah-foto model="logo" label="Logo" :pratinjau="$pratinjau('logo')" rasio="aspect-square" :rasio-potong="1" keterangan="Persegi, maks 3 MB." />
-                    <x-admin.unggah-foto model="foto_hero" label="Foto hero (beranda)" :pratinjau="$pratinjau('foto_hero')" rasio="aspect-square" :rasio-potong="16 / 9" keterangan="Latar layar pertama beranda." />
-                    <x-admin.unggah-foto model="foto_gereja" label="Foto gereja" :pratinjau="$pratinjau('foto_gereja')" rasio="aspect-square" :rasio-potong="4 / 5" keterangan="Bagian Tentang Kami & Profil." />
+                    <x-admin.unggah-foto model="logo" label="Logo" :pratinjau="$pratinjau('logo')" :hapus="$hapus('logo')" rasio="aspect-square" :rasio-potong="1" keterangan="Persegi, maks 3 MB." />
+                    <x-admin.unggah-foto model="foto_hero" label="Foto hero (beranda)" :pratinjau="$pratinjau('foto_hero')" :hapus="$hapus('foto_hero')" rasio="aspect-square" :rasio-potong="16 / 9" keterangan="Latar layar pertama beranda." />
+                    <x-admin.unggah-foto model="foto_gereja" label="Foto gereja" :pratinjau="$pratinjau('foto_gereja')" :hapus="$hapus('foto_gereja')" rasio="aspect-square" :rasio-potong="4 / 5" keterangan="Bagian Tentang Kami & Profil." />
                 </div>
             </x-admin.kartu>
 
             <x-admin.kartu judul="Santo/Santa Pelindung" deskripsi="Tampil di halaman Profil, lengkap dengan foto dan kisahnya." icon="sparkles">
                 <div class="grid gap-6 md:grid-cols-3">
-                    <x-admin.unggah-foto model="foto_pelindung" label="Foto / gambar pelindung" :pratinjau="$pratinjau('foto_pelindung')" rasio="aspect-[4/5]" :rasio-potong="4 / 5" />
+                    <x-admin.unggah-foto model="foto_pelindung" label="Foto / gambar pelindung" :pratinjau="$pratinjau('foto_pelindung')" :hapus="$hapus('foto_pelindung')" rasio="aspect-[4/5]" :rasio-potong="4 / 5" />
 
                     <div class="space-y-6 md:col-span-2">
                         <flux:input wire:model="pelindung" label="Nama pelindung" placeholder="contoh: Santo Yoseph" />

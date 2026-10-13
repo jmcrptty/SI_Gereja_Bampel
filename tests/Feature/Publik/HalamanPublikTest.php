@@ -7,6 +7,8 @@ use App\Models\Lingkungan;
 use App\Models\Pengurus;
 use App\Models\Setting;
 use App\Models\Warta;
+use Illuminate\Support\Carbon;
+use Livewire\Livewire;
 
 test('every public page can be opened without login', function (string $route) {
     $this->get(route($route))->assertOk();
@@ -86,6 +88,14 @@ test('lingkungan are grouped by wilayah with the ungrouped ones last', function 
         ->assertSeeInOrder(['Stasi Bampel', 'Santo Petrus', 'Jl. Ermasu', 'Jl. Mandala', 'Lainnya', 'Tanpa Wilayah']);
 });
 
+test('lingkungan wilayah count ignores the ungrouped "Lainnya" group', function () {
+    Lingkungan::create(['nama' => 'Tanpa Wilayah']);
+    Lingkungan::create(['nama' => 'Santo Petrus', 'wilayah' => 'Stasi Bampel']);
+    Lingkungan::create(['nama' => 'Santo Paulus', 'wilayah' => 'Stasi Kuprik']);
+
+    expect(Livewire::test('pages::publik.lingkungan')->instance()->jumlahWilayah)->toBe(2);
+});
+
 test('jadwal misa hides inactive and past misa', function () {
     JadwalMisa::create(['jenis' => JadwalMisa::KHUSUS, 'nama_perayaan' => 'Malam Natal', 'tanggal' => today()->addMonth(), 'jam' => '19:00', 'tempat' => 'Gereja']);
     JadwalMisa::create(['jenis' => JadwalMisa::KHUSUS, 'nama_perayaan' => 'Paskah Lalu', 'tanggal' => today()->subDay(), 'jam' => '07:00', 'tempat' => 'Gereja']);
@@ -114,6 +124,31 @@ test('next misa skips masses that already passed today', function () {
     $this->get(route('jadwal-misa'))
         ->assertOk()
         ->assertSeeInOrder(['Misa berikutnya', 'Minggu', '06:30', 'Setiap Minggu']);
+});
+
+test('next misa shows a hari raya misa when it comes before the next rutin misa', function () {
+    Carbon::setTestNow(Carbon::parse('2026-12-24 10:00'));
+    JadwalMisa::create(['jenis' => JadwalMisa::RUTIN, 'hari' => 7, 'jam' => '06:30', 'tempat' => 'Gereja']);
+    JadwalMisa::create(['jenis' => JadwalMisa::KHUSUS, 'nama_perayaan' => 'Malam Natal', 'tanggal' => '2026-12-24', 'jam' => '19:00', 'tempat' => 'Gereja']);
+
+    $this->get(route('jadwal-misa'))
+        ->assertOk()
+        ->assertSeeInOrder(['Misa berikutnya', 'Malam Natal', 'Hari ini', '19:00', 'Setiap Minggu']);
+
+    Carbon::setTestNow(Carbon::parse('2026-12-24 20:00'));
+
+    $this->get(route('jadwal-misa'))
+        ->assertOk()
+        ->assertSeeInOrder(['Misa berikutnya', 'Minggu', '06:30', 'Setiap Minggu']);
+});
+
+test('next misa shows the date of a hari raya misa further away', function () {
+    Carbon::setTestNow(Carbon::parse('2026-12-21 10:00'));
+    JadwalMisa::create(['jenis' => JadwalMisa::KHUSUS, 'nama_perayaan' => 'Natal', 'tanggal' => '2026-12-25', 'jam' => '07:00', 'tempat' => 'Gereja']);
+
+    $this->get(route('jadwal-misa'))
+        ->assertOk()
+        ->assertSeeInOrder(['Misa berikutnya', 'Natal', 'Jumat, 25 Desember 2026', '07:00']);
 });
 
 test('warta page shows only published warta', function () {

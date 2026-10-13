@@ -31,4 +31,9 @@ class Pengurus extends Model
     {
         return $this->fileUrl('foto');
     }
+
+    public function getFotoKecilUrlAttribute(): ?string
+    {
+        return $this->fileUrlKecil('foto');
+    }
 }

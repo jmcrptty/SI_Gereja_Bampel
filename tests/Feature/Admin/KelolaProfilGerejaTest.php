@@ -48,6 +48,27 @@ test('admin can save the pelindung story and photo', function () {
     Storage::disk('public')->assertExists($setting->foto_pelindung);
 });
 
+test('admin can remove a profile photo and the website falls back to the default image', function () {
+    Storage::fake('public');
+    Storage::disk('public')->put('profil/hero.webp', 'isi');
+    Storage::disk('public')->put('profil/hero_kecil.webp', 'isi');
+    Setting::current()->update(['foto_hero' => 'profil/hero.webp']);
+
+    Livewire::test('pages::admin.profil-gereja')->call('hapusFoto', 'foto_hero');
+
+    expect(Setting::current()->foto_hero)->toBeNull();
+    Storage::disk('public')->assertMissing(['profil/hero.webp', 'profil/hero_kecil.webp']);
+    $this->get(route('home'))->assertOk()->assertSee('images/hero-gereja.svg');
+});
+
+test('only known photo columns can be removed', function () {
+    Livewire::test('pages::admin.profil-gereja')
+        ->call('hapusFoto', 'nama_gereja')
+        ->assertNotFound();
+
+    expect(Setting::current()->nama_gereja)->not->toBeNull();
+});
+
 test('social media usernames are saved as full links', function () {
     Livewire::test('pages::admin.profil-gereja')
         ->set('instagram', '@parokibambupemali')

@@ -6,6 +6,7 @@
     'rasioPotong' => null,
     'keterangan' => 'Maks 3 MB. Otomatis dikompres ke WebP.',
     'input' => true,
+    'hapus' => null,
 ])
 
 {{--
@@ -14,6 +15,7 @@
     - pratinjau: URL foto sementara/tersimpan, atau null.
     - rasio: kelas aspect kotak pratinjau; rasioPotong: rasio awal editor crop (angka, null = rasio asli).
     - input: false untuk pratinjau tanpa pemilih file (mis. per foto pada upload banyak).
+    - hapus: aksi Livewire untuk mengosongkan foto tersimpan (contoh: "hapusFoto('logo')"), null = tanpa tombol hapus.
     Crop diterapkan server saat form disimpan (lihat App\Concerns\KompresFoto).
 --}}
 <div wire:key="unggah-{{ $model }}-{{ md5((string) $pratinjau) }}"
@@ -22,13 +24,20 @@
      :class="mengedit && 'col-span-full'">
 
     @if ($label || $pratinjau)
-        <div class="mb-2 flex items-center justify-between gap-2">
+        <div class="mb-2 flex flex-wrap items-center justify-between gap-2">
             @if ($label)
                 <p class="text-sm font-medium text-zinc-800">{{ $label }}</p>
             @endif
+            @if ($hapus)
+                <button type="button" x-show="! mengedit" wire:click="{{ $hapus }}" wire:confirm="Hapus foto ini? Foto yang dihapus tidak bisa dikembalikan."
+                        class="ms-auto inline-flex items-center gap-1 rounded-full bg-red-600/10 px-3 py-1 text-xs font-semibold text-red-700 transition hover:bg-red-600 hover:text-white">
+                    <flux:icon name="trash" variant="micro" class="size-3.5" />
+                    Hapus foto
+                </button>
+            @endif
             @if ($pratinjau)
                 <button type="button" x-show="! mengedit" @click="buka()"
-                        class="ms-auto inline-flex items-center gap-1 rounded-full bg-marun-700/10 px-3 py-1 text-xs font-semibold text-marun-700 transition hover:bg-marun-700 hover:text-white">
+                        class="{{ $hapus ? '' : 'ms-auto' }} inline-flex items-center gap-1 rounded-full bg-marun-700/10 px-3 py-1 text-xs font-semibold text-marun-700 transition hover:bg-marun-700 hover:text-white">
                     <svg class="size-3.5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M7.848 8.25 1.5 16.5m6.348-8.25A3 3 0 1 0 3.75 4.5a3 3 0 0 0 4.098 3.75Zm0 0L12 13.5m0 0 2.652 3.375m-2.652-3.375 2.652-3.375M12 13.5l-4.152 3.375m0 0A3 3 0 1 0 3.75 21a3 3 0 0 0 4.098-4.125Zm6.804-.125L22.5 7.5m-7.848 9.375A3 3 0 1 0 18.75 21a3 3 0 0 0-4.098-4.125Z" /></svg>
                     Crop
                 </button>

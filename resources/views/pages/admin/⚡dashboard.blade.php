@@ -18,8 +18,12 @@ new #[Title('Dashboard')] class extends Component {
     #[Computed]
     public function ringkasan(): array
     {
+        // Misa hari raya yang tanggalnya sudah lewat tidak tampil di website, jadi tidak dihitung.
+        $misaAktif = JadwalMisa::aktif()->rutin()->count()
+            + JadwalMisa::aktif()->khusus()->whereDate('tanggal', '>=', today())->count();
+
         return [
-            ['label' => 'Misa aktif', 'nilai' => JadwalMisa::aktif()->count(), 'icon' => 'calendar-days', 'route' => 'admin.jadwal-misa'],
+            ['label' => 'Misa aktif', 'nilai' => $misaAktif, 'icon' => 'calendar-days', 'route' => 'admin.jadwal-misa'],
             ['label' => 'Kegiatan akan datang', 'nilai' => Kegiatan::aktif()->akanDatang()->count(), 'icon' => 'megaphone', 'route' => 'admin.kegiatan'],
             ['label' => 'Warta terbit bulan ini', 'nilai' => Warta::terbit()->whereBetween('tanggal', [today()->startOfMonth(), today()->endOfMonth()])->count(), 'icon' => 'newspaper', 'route' => 'admin.warta'],
             ['label' => 'Foto galeri', 'nilai' => Galeri::count(), 'icon' => 'photo', 'route' => 'admin.galeri'],

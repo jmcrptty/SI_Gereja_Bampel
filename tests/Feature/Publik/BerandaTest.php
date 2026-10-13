@@ -4,6 +4,7 @@ use App\Models\JadwalMisa;
 use App\Models\Kegiatan;
 use App\Models\Setting;
 use App\Models\Warta;
+use Illuminate\Support\Carbon;
 
 function misaRutin(array $atribut = []): JadwalMisa
 {
@@ -39,6 +40,18 @@ test('hero misa card falls back to active rutin misa', function () {
         ->assertSee('06:00')
         ->assertDontSee('17:30')
         ->assertDontSee('Nonaktif');
+});
+
+test('hero rutin misa card moves masses that already passed today to the end', function () {
+    Carbon::setTestNow(Carbon::parse('2026-10-18 08:00')); // Minggu
+    misaRutin(['hari' => 7, 'jam' => '06:30']);
+    misaRutin(['hari' => 7, 'jam' => '09:00']);
+    misaRutin(['hari' => 1, 'jam' => '06:00']);
+
+    $card = JadwalMisa::untukCardHero();
+
+    expect($card['items']->map(fn (JadwalMisa $m) => "{$m->nama_hari} {$m->jam_format}")->all())
+        ->toBe(['Minggu 09:00', 'Senin 06:00', 'Minggu 06:30']);
 });
 
 test('hero misa card shows a link when there is no misa', function () {
@@ -79,23 +92,21 @@ test('only published warta appear on the home page', function () {
         ->assertDontSee('Warta Draft');
 });
 
-test('footer always shows instagram, youtube, and whatsapp, dimmed until filled in', function () {
+test('footer shows only the social media that are filled in', function () {
     $this->get(route('home'))
         ->assertOk()
-        ->assertSee('Ikuti Kami')
-        ->assertSee('Instagram segera hadir')
-        ->assertSee('YouTube segera hadir')
-        ->assertSee('WhatsApp segera hadir')
-        ->assertDontSee('Facebook');
+        ->assertDontSee('Ikuti Kami')
+        ->assertDontSee('segera hadir');
 
     Setting::current()->update(['instagram' => 'https://instagram.com/paroki', 'youtube' => 'https://youtube.com/@paroki']);
 
     $this->get(route('home'))
         ->assertOk()
+        ->assertSee('Ikuti Kami')
         ->assertSee('aria-label="Instagram"', false)
         ->assertSee('https://youtube.com/@paroki')
-        ->assertDontSee('Instagram segera hadir')
-        ->assertSee('WhatsApp segera hadir');
+        ->assertDontSee('aria-label="WhatsApp"', false)
+        ->assertDontSee('aria-label="Facebook"', false);
 });
 
 test('whatsapp button appears only when a number is set', function () {

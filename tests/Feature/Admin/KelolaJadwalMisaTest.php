@@ -69,6 +69,27 @@ test('admin can edit a misa', function () {
     expect($misa->fresh()->tempat)->toBe('Baru');
 });
 
+test('past hari raya misa are marked as sudah lewat', function () {
+    JadwalMisa::create(['jenis' => JadwalMisa::KHUSUS, 'nama_perayaan' => 'Paskah', 'tanggal' => today()->subDay(), 'jam' => '07:00', 'tempat' => 'Gereja']);
+
+    Livewire::test('pages::admin.jadwal-misa')->assertSeeInOrder(['Paskah', 'Sudah lewat']);
+});
+
+test('upcoming hari raya misa are not marked as sudah lewat', function () {
+    JadwalMisa::create(['jenis' => JadwalMisa::KHUSUS, 'nama_perayaan' => 'Natal', 'tanggal' => today(), 'jam' => '07:00', 'tempat' => 'Gereja']);
+
+    Livewire::test('pages::admin.jadwal-misa')->assertSee('Natal')->assertDontSee('Sudah lewat');
+});
+
+test('search finds rutin misa by day name', function () {
+    JadwalMisa::create(['jenis' => JadwalMisa::RUTIN, 'hari' => 7, 'jam' => '07:00', 'tempat' => 'Gereja Paroki']);
+    JadwalMisa::create(['jenis' => JadwalMisa::RUTIN, 'hari' => 3, 'jam' => '17:30', 'tempat' => 'Kapel']);
+
+    $hasil = Livewire::test('pages::admin.jadwal-misa')->set('cari', 'minggu')->instance()->daftarMisa;
+
+    expect($hasil->pluck('hari')->all())->toBe([7]);
+});
+
 test('toggle aktif flips the status', function () {
     $misa = JadwalMisa::create(['jenis' => JadwalMisa::RUTIN, 'hari' => 7, 'jam' => '07:00', 'tempat' => 'Gereja', 'aktif' => true]);
 

@@ -111,10 +111,17 @@ class JadwalMisa extends Model
             return ['judul' => 'Jadwal Misa Hari Raya', 'khusus' => true, 'items' => $khusus];
         }
 
+        // Misa hari ini yang jamnya sudah lewat dipindah ke urutan paling akhir (minggu depan).
+        $hariIni = today()->dayOfWeekIso;
+        $jamSekarang = now()->format('H:i:s');
+
+        [$sudahLewat, $berikutnya] = static::aktif()->rutin()->urutDariHariIni()->get()
+            ->partition(fn (self $misa) => $misa->hari === $hariIni && $misa->jam < $jamSekarang);
+
         return [
             'judul' => 'Jadwal Misa Minggu Ini',
             'khusus' => false,
-            'items' => static::aktif()->rutin()->urutDariHariIni()->limit(4)->get(),
+            'items' => $berikutnya->concat($sudahLewat)->take(4)->values(),
         ];
     }
 }

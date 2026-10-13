@@ -5,14 +5,15 @@ namespace App\Concerns;
 use Illuminate\Support\Str;
 
 /**
- * Membuat slug unik otomatis dari kolom "judul".
+ * Membuat slug unik otomatis dari kolom "judul" saat data dibuat.
+ * Slug tidak berubah saat judul diedit, agar link yang sudah dibagikan tetap berfungsi.
  */
 trait HasSlug
 {
     public static function bootHasSlug(): void
     {
-        static::saving(function ($model) {
-            if (blank($model->slug) || $model->isDirty('judul')) {
+        static::creating(function ($model) {
+            if (blank($model->slug)) {
                 $model->slug = static::buatSlugUnik($model->judul, $model->getKey());
             }
         });

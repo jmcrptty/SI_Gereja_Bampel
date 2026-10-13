@@ -70,12 +70,15 @@ new #[Title('Galeri')] class extends Component {
 
     public function simpan(): void
     {
+        // Kompres banyak foto bisa melebihi max_execution_time 30 detik di shared hosting.
+        set_time_limit(120);
+
         $data = $this->validate([
             'judul' => ['required', 'string', 'max:255'],
             'tanggal' => ['nullable', 'date'],
             ...$this->editId
                 ? ['foto' => ['nullable', ...$this->aturanFoto()]]
-                : ['fotos' => ['required', 'array', 'max:20'], 'fotos.*' => $this->aturanFoto()],
+                : ['fotos' => ['required', 'array', 'max:10'], 'fotos.*' => $this->aturanFoto()],
         ]);
 
         $data = ['judul' => $data['judul'], 'tanggal' => $data['tanggal'] ?: null];
@@ -141,7 +144,7 @@ new #[Title('Galeri')] class extends Component {
     <div class="mt-4 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6">
         @forelse ($this->daftarFoto as $galeri)
             <div wire:key="galeri-{{ $galeri->id }}" class="overflow-hidden rounded-lg border border-zinc-200 dark:border-zinc-700">
-                <img src="{{ $galeri->foto_url }}" alt="{{ $galeri->judul }}" class="aspect-square w-full object-cover" loading="lazy">
+                <img src="{{ $galeri->foto_kecil_url }}" alt="{{ $galeri->judul }}" class="aspect-square w-full object-cover" loading="lazy">
                 <div class="p-2">
                     <flux:text class="truncate text-sm font-medium">{{ $galeri->judul }}</flux:text>
                     <flux:text class="text-xs">{{ $galeri->tanggal?->translatedFormat('j F Y') ?? '–' }}</flux:text>
@@ -173,7 +176,7 @@ new #[Title('Galeri')] class extends Component {
             @else
                 <div>
                     <flux:input type="file" wire:model="fotos" label="Foto" accept="image/*" multiple />
-                    <flux:text class="mt-1 text-xs">Bisa pilih banyak foto (maks 20), masing-masing maks 3 MB. Klik "Crop" pada foto untuk memotongnya.</flux:text>
+                    <flux:text class="mt-1 text-xs">Bisa pilih banyak foto (maks 10 sekali upload), masing-masing maks 3 MB. Klik "Crop" pada foto untuk memotongnya.</flux:text>
                     <flux:error name="fotos.*" />
                 </div>
 

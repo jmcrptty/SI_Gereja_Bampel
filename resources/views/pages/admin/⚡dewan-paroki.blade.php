@@ -105,6 +105,19 @@ new #[Title('Dewan Paroki')] class extends Component {
         Flux::toast(variant: 'success', text: 'Data pengurus disimpan.');
     }
 
+    /**
+     * Kosongkan foto pengurus yang sedang diedit; file lama dihapus oleh HasFileCleanup.
+     */
+    public function hapusFoto(): void
+    {
+        Pengurus::findOrFail($this->editId)->update(['foto' => null]);
+
+        $this->reset(['foto', 'potong']);
+        unset($this->pengurusDiedit);
+
+        Flux::toast(variant: 'success', text: 'Foto pengurus dihapus.');
+    }
+
     public function konfirmasiHapus(int $id): void
     {
         $this->hapusId = $id;
@@ -156,7 +169,7 @@ new #[Title('Dewan Paroki')] class extends Component {
                     <flux:table.cell>{{ $pengurus->urutan }}</flux:table.cell>
                     <flux:table.cell variant="strong">
                         <div class="flex items-center gap-3">
-                            <flux:avatar size="sm" :src="$pengurus->foto_url" :name="$pengurus->nama" />
+                            <flux:avatar size="sm" :src="$pengurus->foto_kecil_url" :name="$pengurus->nama" />
                             {{ $pengurus->nama }}
                         </div>
                     </flux:table.cell>
@@ -195,6 +208,7 @@ new #[Title('Dewan Paroki')] class extends Component {
             <div class="max-w-xs">
                 <x-admin.unggah-foto model="foto" label="Foto (opsional)" rasio="aspect-[4/5]" :rasio-potong="4 / 5"
                     :pratinjau="$foto?->isPreviewable() ? $foto->temporaryUrl() : $this->pengurusDiedit?->foto_url"
+                    :hapus="$this->pengurusDiedit?->foto ? 'hapusFoto' : null"
                     keterangan="Maks 3 MB. Foto potret (4:5) paling pas." />
             </div>
 

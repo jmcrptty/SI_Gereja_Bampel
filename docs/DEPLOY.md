@@ -204,9 +204,12 @@ ln -s /home/akunparoki/paroki/storage/app/public /home/akunparoki/paroki/public/
 3. Login di `https://parokibambupemali.org/login`:
    - Email: `admin@gerejabampel.test`
    - Kata sandi: `password`
-4. **Segera** ganti di menu pengguna (pojok kiri bawah) → *Pengaturan*:
-   - *Profil*: nama & **email asli sekretariat** (dipakai untuk "Lupa kata sandi").
-   - *Keamanan*: **kata sandi baru** yang kuat.
+4. **Segera** amankan akun admin lewat menu pengguna (pojok kiri bawah) → *Pengaturan*, **dengan urutan ini**:
+   1. **Pastikan SMTP berfungsi**: logout, buka *Lupa kata sandi*, masukkan email admin saat ini, lalu cek di *Mail Delivery Reports* cPanel / log bahwa email benar-benar terkirim. Jika gagal, perbaiki `MAIL_*` di `.env` dulu.
+   2. *Keamanan*: ganti ke **kata sandi baru** yang kuat.
+   3. Baru setelah itu *Profil*: ganti nama & **email asli sekretariat** (dipakai untuk "Lupa kata sandi"), lalu buka kotak masuk email tersebut dan klik link verifikasinya.
+
+   > **Kenapa harus berurutan?** Akun admin memakai verifikasi email. Begitu email diganti, status akun menjadi *belum terverifikasi* dan halaman **Keamanan terkunci** sampai link verifikasi di email baru diklik. Jika SMTP belum jalan, email verifikasi tidak pernah sampai dan kata sandi `password` tidak bisa diganti dari dashboard.
 5. Isi **Admin → Profil Paroki** (nama, foto, sejarah, kontak, WhatsApp, media sosial), lalu jadwal misa, pengurus, lingkungan.
 6. Uji upload satu foto dan satu PDF warta, lalu pastikan tampil di website.
 

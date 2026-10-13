@@ -2,6 +2,7 @@
 
 use App\Models\Warta;
 use Flux\Flux;
+use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\Title;
@@ -75,7 +76,9 @@ new #[Title('Warta')] class extends Component {
         $data['ringkasan'] = $data['ringkasan'] ?: null;
 
         if ($this->file_pdf) {
-            $data['file_pdf'] = $this->file_pdf->store('warta', 'public');
+            // Nama file mudah dibaca saat diunduh umat, contoh: warta-minggu-ini-a1b2c3.pdf
+            $nama = (Str::slug($data['judul']) ?: 'warta').'-'.Str::lower(Str::random(6)).'.pdf';
+            $data['file_pdf'] = $this->file_pdf->storeAs('warta', $nama, 'public');
         }
 
         $warta = $this->editId ? Warta::findOrFail($this->editId) : new Warta;

@@ -118,27 +118,6 @@ class Setting extends Model
     }
 
     /**
-     * Ikon media sosial untuk footer: Instagram, YouTube, WhatsApp selalu tampil
-     * (url null = belum diisi, ditampilkan redup "segera hadir"); Facebook hanya bila diisi.
-     *
-     * @return array<int, array{jenis: string, label: string, url: string|null}>
-     */
-    public function getMediaSosialFooterAttribute(): array
-    {
-        $daftar = [
-            ['jenis' => 'instagram', 'label' => 'Instagram', 'url' => self::linkMedsos('instagram', $this->instagram)],
-            ['jenis' => 'youtube', 'label' => 'YouTube', 'url' => self::linkMedsos('youtube', $this->youtube)],
-            ['jenis' => 'whatsapp', 'label' => 'WhatsApp', 'url' => $this->whatsapp_url],
-        ];
-
-        if ($facebook = self::linkMedsos('facebook', $this->facebook)) {
-            $daftar[] = ['jenis' => 'facebook', 'label' => 'Facebook', 'url' => $facebook];
-        }
-
-        return $daftar;
-    }
-
-    /**
      * Jam sekretariat dipecah per baris.
      *
      * @return array<int, string>

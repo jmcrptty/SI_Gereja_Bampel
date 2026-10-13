@@ -155,11 +155,11 @@
                         <p><a href="mailto:{{ $setting->email }}" class="hover:text-white">{{ $setting->email }}</a></p>
                     @endif
 
-                    {{-- Media sosial: Instagram, YouTube, WhatsApp selalu tampil; yang belum diisi di admin tampil redup "segera hadir". --}}
-                    <p class="mt-6 text-xs font-semibold uppercase tracking-widest text-krem-300">Ikuti Kami</p>
-                    <div class="mt-3 flex flex-wrap gap-2">
-                        @foreach ($setting->media_sosial_footer as $medsos)
-                            @if ($medsos['url'])
+                    {{-- Media sosial: hanya yang sudah diisi di admin. --}}
+                    @if ($setting->media_sosial)
+                        <p class="mt-6 text-xs font-semibold uppercase tracking-widest text-krem-300">Ikuti Kami</p>
+                        <div class="mt-3 flex flex-wrap gap-2">
+                            @foreach ($setting->media_sosial as $medsos)
                                 <a href="{{ $medsos['url'] }}" target="_blank" rel="noopener" aria-label="{{ $medsos['label'] }}" title="{{ $medsos['label'] }}"
                                    @class([
                                        'flex size-10 items-center justify-center rounded-full bg-white/10 text-krem-100 ring-1 ring-white/15 transition hover:-translate-y-0.5 hover:text-white',
@@ -170,14 +170,9 @@
                                    ])>
                                     <x-ikon-medsos :jenis="$medsos['jenis']" class="size-5" />
                                 </a>
-                            @else
-                                <span title="{{ $medsos['label'] }} segera hadir" aria-label="{{ $medsos['label'] }} segera hadir"
-                                      class="flex size-10 cursor-default items-center justify-center rounded-full bg-white/5 text-krem-100/40 ring-1 ring-white/10">
-                                    <x-ikon-medsos :jenis="$medsos['jenis']" class="size-5" />
-                                </span>
-                            @endif
-                        @endforeach
-                    </div>
+                            @endforeach
+                        </div>
+                    @endif
                 </div>
 
                 <div>

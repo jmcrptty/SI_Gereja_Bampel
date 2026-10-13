@@ -3,7 +3,7 @@
 <a href="{{ route('kegiatan.show', $kegiatan) }}" wire:navigate
    class="group flex flex-col overflow-hidden rounded-xl border border-krem-200 bg-white transition hover:shadow-md">
     @if ($kegiatan->foto_url)
-        <img src="{{ $kegiatan->foto_url }}" alt="{{ $kegiatan->judul }}" class="aspect-video w-full object-cover" loading="lazy" width="640" height="360">
+        <img src="{{ $kegiatan->foto_kecil_url }}" alt="{{ $kegiatan->judul }}" class="aspect-video w-full object-cover" loading="lazy" width="640" height="360">
     @else
         <div class="flex aspect-video w-full items-center justify-center bg-krem-100 text-coklat-400">
             <x-publik.ikon-kegiatan class="size-14" />

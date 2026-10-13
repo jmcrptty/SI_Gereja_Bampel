@@ -35,7 +35,7 @@ new #[Layout('layouts::publik')] #[Title('Galeri')] class extends Component {
                         <button type="button" wire:key="foto-{{ $galeri->id }}"
                                 @click="foto = { src: @js($galeri->foto_url), judul: @js($galeri->judul), tanggal: @js($galeri->tanggal?->translatedFormat('j F Y')) }"
                                 class="group relative mb-4 block w-full break-inside-avoid overflow-hidden rounded-2xl text-left shadow-sm ring-1 ring-krem-300/70">
-                            <img src="{{ $galeri->foto_url }}" alt="{{ $galeri->judul }}"
+                            <img src="{{ $galeri->foto_kecil_url }}" alt="{{ $galeri->judul }}"
                                  class="{{ $rasio }} w-full object-cover transition duration-500 group-hover:scale-105" loading="lazy" width="400" height="500">
                             <span class="absolute inset-0 bg-gradient-to-t from-coklat-900/80 via-coklat-900/0 to-transparent opacity-80 transition group-hover:opacity-100"></span>
                             <span class="absolute inset-x-0 bottom-0 p-3">

@@ -2,6 +2,7 @@
 
 use App\Models\Pengurus;
 use App\Models\User;
+use Illuminate\Support\Facades\Storage;
 use Livewire\Livewire;
 
 beforeEach(function () {
@@ -42,6 +43,20 @@ test('nama, jabatan, periode, and urutan are required', function () {
         ->set('urutan', '')
         ->call('simpan')
         ->assertHasErrors(['nama', 'jabatan', 'periode', 'urutan']);
+});
+
+test('admin can remove the pengurus photo', function () {
+    Storage::fake('public');
+    Storage::disk('public')->put('pengurus/lama.webp', 'isi');
+    $pengurus = Pengurus::create(['nama' => 'Yohanes', 'jabatan' => 'Ketua', 'periode' => '2024-2027', 'foto' => 'pengurus/lama.webp']);
+
+    Livewire::test('pages::admin.dewan-paroki')
+        ->call('edit', $pengurus->id)
+        ->call('hapusFoto');
+
+    expect($pengurus->fresh()->foto)->toBeNull();
+    Storage::disk('public')->assertMissing('pengurus/lama.webp');
+    $this->get(route('dewan-paroki'))->assertOk()->assertDontSee('pengurus/lama.webp');
 });
 
 test('admin can delete a pengurus', function () {

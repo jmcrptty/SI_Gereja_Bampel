@@ -14,6 +14,8 @@ beforeEach(function () {
 test('summary counts only active, upcoming, and published data', function () {
     JadwalMisa::create(['jenis' => JadwalMisa::RUTIN, 'hari' => 7, 'jam' => '07:00', 'tempat' => 'Gereja', 'aktif' => true]);
     JadwalMisa::create(['jenis' => JadwalMisa::RUTIN, 'hari' => 6, 'jam' => '18:00', 'tempat' => 'Gereja', 'aktif' => false]);
+    JadwalMisa::create(['jenis' => JadwalMisa::KHUSUS, 'nama_perayaan' => 'Natal', 'tanggal' => today()->addWeek(), 'jam' => '19:00', 'tempat' => 'Gereja', 'aktif' => true]);
+    JadwalMisa::create(['jenis' => JadwalMisa::KHUSUS, 'nama_perayaan' => 'Paskah', 'tanggal' => today()->subDay(), 'jam' => '07:00', 'tempat' => 'Gereja', 'aktif' => true]);
 
     Kegiatan::create(['judul' => 'Akan datang', 'tanggal' => today()->addDay(), 'tempat' => '-', 'deskripsi' => '-']);
     Kegiatan::create(['judul' => 'Sudah lewat', 'tanggal' => today()->subDay(), 'tempat' => '-', 'deskripsi' => '-']);
@@ -28,7 +30,7 @@ test('summary counts only active, upcoming, and published data', function () {
     $ringkasan = collect(Livewire::test('pages::admin.dashboard')->instance()->ringkasan)->pluck('nilai', 'label');
 
     expect($ringkasan->all())->toBe([
-        'Misa aktif' => 1,
+        'Misa aktif' => 2,
         'Kegiatan akan datang' => 1,
         'Warta terbit bulan ini' => 1,
         'Foto galeri' => 1,

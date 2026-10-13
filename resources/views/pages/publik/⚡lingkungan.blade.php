@@ -18,6 +18,15 @@ new #[Layout('layouts::publik')] #[Title('Lingkungan')] class extends Component 
             ->groupBy(fn (Lingkungan $l) => $l->wilayah ?: 'Lainnya')
             ->pipe(fn (Collection $grup) => $grup->except('Lainnya')->union($grup->only('Lainnya')));
     }
+
+    /**
+     * Jumlah wilayah/stasi sungguhan, tanpa kelompok "Lainnya" (lingkungan tanpa wilayah).
+     */
+    #[Computed]
+    public function jumlahWilayah(): int
+    {
+        return $this->perWilayah->except('Lainnya')->count();
+    }
 }; ?>
 
 <div x-data="{ aktif: 'semua' }">
@@ -31,7 +40,7 @@ new #[Layout('layouts::publik')] #[Title('Lingkungan')] class extends Component 
             <x-publik.kepala-halaman eyebrow="Lingkungan" judul="Lingkungan" aksen="& Wilayah"
                 subjudul="Komunitas basis umat untuk doa, persaudaraan, dan pelayanan sehari-hari. Temukan lingkungan Anda berdasarkan wilayah dan cakupan jalan.">
                 <div class="grid grid-cols-3 divide-x divide-krem-300 rounded-2xl bg-white py-4 text-center shadow-sm ring-1 ring-krem-300/70">
-                    @foreach ([['Wilayah', $grup->count()], ['Lingkungan', $semua->count()], ['KK', $semua->sum('jumlah_kk')]] as [$label, $nilai])
+                    @foreach ([['Wilayah', $this->jumlahWilayah], ['Lingkungan', $semua->count()], ['KK', $semua->sum('jumlah_kk')]] as [$label, $nilai])
                         <div class="px-5 sm:px-7">
                             <p class="font-serif text-3xl font-bold text-marun-700">{{ $nilai }}</p>
                             <p class="text-xs text-coklat-500">{{ $label }}</p>

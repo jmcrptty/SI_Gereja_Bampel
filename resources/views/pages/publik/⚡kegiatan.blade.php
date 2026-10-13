@@ -51,7 +51,7 @@ new #[Layout('layouts::publik')] #[Title('Kegiatan')] class extends Component {
                             <a href="{{ route('kegiatan.show', $kegiatan) }}" wire:navigate
                                class="group flex flex-col overflow-hidden rounded-2xl bg-white shadow-sm ring-1 ring-krem-300/70 transition hover:-translate-y-0.5 hover:shadow-lg sm:flex-row">
                                 @if ($kegiatan->foto_url)
-                                    <img src="{{ $kegiatan->foto_url }}" alt="" class="aspect-video w-full object-cover sm:aspect-auto sm:w-48" loading="lazy" width="384" height="256">
+                                    <img src="{{ $kegiatan->foto_kecil_url }}" alt="" class="aspect-video w-full object-cover sm:aspect-auto sm:w-48" loading="lazy" width="384" height="256">
                                 @endif
                                 <div class="flex-1 p-5">
                                     <p class="text-sm font-medium text-marun-700">

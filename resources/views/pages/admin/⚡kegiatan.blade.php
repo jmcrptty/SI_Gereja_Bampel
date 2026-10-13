@@ -102,6 +102,19 @@ new #[Title('Kegiatan')] class extends Component {
         Flux::toast(variant: 'success', text: 'Kegiatan disimpan.');
     }
 
+    /**
+     * Kosongkan foto kegiatan yang sedang diedit; file lama dihapus oleh HasFileCleanup.
+     */
+    public function hapusFoto(): void
+    {
+        Kegiatan::findOrFail($this->editId)->update(['foto' => null]);
+
+        $this->reset(['foto', 'potong']);
+        unset($this->kegiatanDiedit);
+
+        Flux::toast(variant: 'success', text: 'Foto kegiatan dihapus.');
+    }
+
     public function toggleAktif(int $id): void
     {
         $kegiatan = Kegiatan::findOrFail($id);
@@ -158,7 +171,7 @@ new #[Title('Kegiatan')] class extends Component {
                     <flux:table.cell variant="strong">
                         <div class="flex items-center gap-3">
                             @if ($kegiatan->foto_url)
-                                <img src="{{ $kegiatan->foto_url }}" alt="" class="size-10 rounded object-cover">
+                                <img src="{{ $kegiatan->foto_kecil_url }}" alt="" class="size-10 rounded object-cover">
                             @else
                                 <div class="flex size-10 items-center justify-center rounded bg-zinc-100 dark:bg-zinc-700">
                                     <flux:icon.calendar class="size-5 text-zinc-400" />
@@ -206,6 +219,7 @@ new #[Title('Kegiatan')] class extends Component {
 
             <x-admin.unggah-foto model="foto" label="Foto (opsional)" rasio="aspect-video" :rasio-potong="16 / 9"
                 :pratinjau="$foto?->isPreviewable() ? $foto->temporaryUrl() : $this->kegiatanDiedit?->foto_url"
+                :hapus="$this->kegiatanDiedit?->foto ? 'hapusFoto' : null"
                 keterangan="Maks 3 MB. Tanpa foto akan tampil ikon default." />
 
             <flux:switch wire:model="aktif" label="Aktif (tampil di website)" align="left" />

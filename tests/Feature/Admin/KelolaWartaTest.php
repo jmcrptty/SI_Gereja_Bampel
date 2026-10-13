@@ -27,6 +27,7 @@ test('admin can create a warta with a pdf', function () {
     $warta = Warta::sole();
 
     expect($warta->slug)->toBe('warta-minggu-ini')
+        ->and($warta->file_pdf)->toMatch('#^warta/warta-minggu-ini-[a-z0-9]{6}\.pdf$#')
         ->and($warta->status)->toBe(Warta::TERBIT)
         ->and($warta->tanggal->isToday())->toBeTrue();
     Storage::disk('public')->assertExists($warta->file_pdf);

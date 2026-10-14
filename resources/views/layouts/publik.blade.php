@@ -10,7 +10,7 @@
 
     $menuTentang = [
         ['route' => 'profil', 'label' => 'Profil Paroki'],
-        ['route' => 'dewan-paroki', 'label' => 'Dewan Paroki'],
+        ['route' => 'dewan-paroki', 'label' => 'Pastor & Dewan Paroki'],
         ['route' => 'lingkungan', 'label' => 'Lingkungan'],
     ];
 

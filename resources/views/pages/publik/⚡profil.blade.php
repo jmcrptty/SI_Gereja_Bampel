@@ -217,7 +217,7 @@ new #[Layout('layouts::publik')] #[Title('Profil Paroki')] class extends Compone
                     @if ($setting->link_maps)
                         <a href="{{ $setting->link_maps }}" target="_blank" rel="noopener" class="rounded-full px-6 py-3 text-sm font-semibold text-white ring-1 ring-white/40 transition hover:bg-white/10">Buka Google Maps</a>
                     @endif
-                    <a href="{{ route('dewan-paroki') }}" wire:navigate class="rounded-full px-6 py-3 text-sm font-semibold text-white ring-1 ring-white/40 transition hover:bg-white/10">Dewan Paroki</a>
+                    <a href="{{ route('dewan-paroki') }}" wire:navigate class="rounded-full px-6 py-3 text-sm font-semibold text-white ring-1 ring-white/40 transition hover:bg-white/10">Pastor & Dewan Paroki</a>
                 </div>
             </div>
         </div>

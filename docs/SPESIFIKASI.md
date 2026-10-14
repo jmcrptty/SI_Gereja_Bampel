@@ -7,7 +7,7 @@ Ringkasan hasil diskusi perencanaan (Oktober 2026). Ikuti dokumen ini saat menul
 - Website informasi paroki Katolik di Merauke, Papua Selatan.
 - Umat hanya **membaca** (tanpa login). Pengelola hanya **satu peran: Admin** (sekretariat). Tidak ada superadmin, tidak ada role/permission. Pastor tidak login; laporan diterima langsung dari sekretariat.
 - Prinsip utama: **sederhana, ringan, mudah dirawat sekretariat.** Jangan menambah fitur atau tabel di luar daftar ini tanpa persetujuan.
-- Prinsip database: **satu fitur = satu tabel.** Total 8 tabel utama.
+- Prinsip database: **satu fitur = satu tabel.** Total 9 tabel utama.
 - Pengguna mengakses lewat HP dengan internet yang bisa lambat → halaman publik harus ringan, gambar dikompres.
 
 ## 2. Stack
@@ -27,7 +27,7 @@ Ringkasan hasil diskusi perencanaan (Oktober 2026). Ikuti dokumen ini saat menul
 
 ### Navbar
 - Beranda
-- Tentang Kami ▾ (Profil Gereja, Dewan Paroki, Lingkungan)
+- Tentang Kami ▾ (Profil Gereja, Pastor & Dewan Paroki, Lingkungan)
 - Jadwal Misa
 - Warta
 - Kegiatan
@@ -50,8 +50,8 @@ Kontak **tidak** di navbar: tampil di bagian bawah Beranda dan di footer semua h
 | --- | --- | --- |
 | Beranda | `/` | Ringkasan semua bagian |
 | Profil Gereja | `/profil` | Sejarah, visi, misi, pelindung (foto + kisah), alamat |
-| Dewan Paroki | `/dewan-paroki` | Pengurus terkini, urut `urutan` |
-| Lingkungan | `/lingkungan` | Dikelompokkan per wilayah/stasi + daftar jalan cakupan |
+| Pastor & Dewan Paroki | `/dewan-paroki` | Perkenalan pastor (foto, data singkat, motto, kisah) di atas, lalu pengurus terkini, urut `urutan` |
+| Lingkungan | `/lingkungan` | Peta arsiran lingkungan (Leaflet; mode Jalan/Satelit/Satelit + Label/Topografi; warna per lingkungan), lalu kartu lingkungan menyamping (geser) urut `urutan`, tanpa pengelompokan wilayah. Ketuk kartu ↔ sorot arsiran. Library peta hanya dimuat bila ada arsiran |
 | Jadwal Misa | `/jadwal-misa` | Misa hari raya di atas (anchor `#hari-raya`), misa rutin per hari, jam sekretariat di bagian bawah |
 | Warta | `/warta` | Daftar warta terbit, klik membuka PDF. Paginasi 10 |
 | Kegiatan | `/kegiatan` | "Akan Datang" + "Kegiatan Sebelumnya" (paginasi 9) |
@@ -76,6 +76,7 @@ Semua di prefix `/admin`, middleware `auth`. **Registrasi dimatikan** (sudah dih
 | Jadwal Misa | `/admin/jadwal-misa` | `jadwal_misas` |
 | Warta | `/admin/warta` | `wartas` |
 | Kegiatan Gereja | `/admin/kegiatan` | `kegiatans` |
+| Pastor Paroki | `/admin/pastor-paroki` | `pastors` |
 | Dewan Paroki | `/admin/dewan-paroki` | `pengurus` |
 | Lingkungan | `/admin/lingkungan` | `lingkungans` |
 | Galeri | `/admin/galeri` | `galeris` |
@@ -85,7 +86,7 @@ Pola setiap halaman kelola: tabel daftar + pencarian + tombol tambah/edit membuk
 
 Dashboard Ringkasan: jumlah misa aktif, kegiatan akan datang, warta terbit bulan ini, total foto galeri, 5 data terakhir yang diubah.
 
-## 5. Database (8 tabel) — SUDAH DIBUAT
+## 5. Database (9 tabel) — SUDAH DIBUAT
 
 Migration ada di `database/migrations/2026_10_11_00000{1-7}_*.php`. Relasi hanya `created_by` / `updated_by` → `users` (nullable, nullOnDelete).
 
@@ -95,7 +96,8 @@ Migration ada di `database/migrations/2026_10_11_00000{1-7}_*.php`. Relasi hanya
 - **wartas**: judul, slug unik, tanggal, ringkasan, file_pdf, status enum(draft, terbit), created_by, updated_by.
 - **kegiatans**: judul, slug unik, tanggal, jam (nullable), tempat, deskripsi, foto (nullable → ikon default), aktif, created_by, updated_by.
 - **pengurus**: nama, jabatan, bidang, foto, periode (string, contoh "2024-2027"), urutan. **Tidak ada arsip periode**; hanya pengurus terkini.
-- **lingkungans**: nama, wilayah (nama wilayah/stasi sebagai kolom teks, bukan tabel terpisah), ketua (nama saja, tanpa nomor HP), jumlah_kk, jadwal_doa, cakupan_jalan (teks, satu jalan per baris), urutan.
+- **pastors** (ditambahkan atas permintaan Jm, 15 Okt 2026): nama, jabatan (Pastor Paroki/Pastor Rekan), tarekat, foto, asal, tanggal_lahir, tanggal_tahbisan, mulai_bertugas (tahun), motto, cerita (latar belakang & kisah, paragraf dipisah baris kosong), urutan. Hanya pastor yang sedang bertugas.
+- **lingkungans**: nama, wilayah (kolom teks; sejak 15 Okt 2026 tidak dipakai lagi di form admin maupun halaman publik atas permintaan Jm, kolom dibiarkan), ketua (nama saja, tanpa nomor HP), jumlah_kk, jadwal_doa, cakupan_jalan (teks, satu jalan per baris), batas_wilayah (json nullable, titik sudut arsiran `[[lat, lng], ...]`, digambar admin di peta; ditambahkan atas permintaan Jm, 15 Okt 2026), urutan.
 - **galeris**: judul, foto, tanggal. Satu baris = satu foto; upload banyak foto sekaligus membuat banyak baris.
 
 ## 6. Kode Backend yang SUDAH ADA
@@ -156,7 +158,7 @@ Data **nonaktif tidak pernah tampil di publik**. Data dengan tanggal yang sudah 
 
 ## 9. Ditunda (JANGAN dibuat sekarang)
 
-Info sakramen, unduh formulir, peta lingkungan, cari lingkungan berdasarkan nama jalan, data umat per KK, donasi online, login umat, aplikasi mobile, notifikasi WA otomatis.
+Info sakramen, unduh formulir, cari lingkungan berdasarkan nama jalan, data umat per KK, donasi online, login umat, aplikasi mobile, notifikasi WA otomatis.
 
 ## 10. Status & Langkah Berikutnya
 

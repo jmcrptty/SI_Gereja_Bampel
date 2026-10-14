@@ -20,6 +20,7 @@ Route::middleware(['auth'])->prefix('admin')->group(function () {
         Route::livewire('jadwal-misa', 'pages::admin.jadwal-misa')->name('jadwal-misa');
         Route::livewire('warta', 'pages::admin.warta')->name('warta');
         Route::livewire('kegiatan', 'pages::admin.kegiatan')->name('kegiatan');
+        Route::livewire('pastor-paroki', 'pages::admin.pastor-paroki')->name('pastor-paroki');
         Route::livewire('dewan-paroki', 'pages::admin.dewan-paroki')->name('dewan-paroki');
         Route::livewire('lingkungan', 'pages::admin.lingkungan')->name('lingkungan');
         Route::livewire('galeri', 'pages::admin.galeri')->name('galeri');

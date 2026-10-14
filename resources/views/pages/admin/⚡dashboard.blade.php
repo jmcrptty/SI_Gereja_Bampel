@@ -4,6 +4,7 @@ use App\Models\Galeri;
 use App\Models\JadwalMisa;
 use App\Models\Kegiatan;
 use App\Models\Lingkungan;
+use App\Models\Pastor;
 use App\Models\Pengurus;
 use App\Models\Warta;
 use Illuminate\Support\Collection;
@@ -42,6 +43,7 @@ new #[Title('Dashboard')] class extends Component {
             [JadwalMisa::class, 'Jadwal Misa', 'admin.jadwal-misa', fn (JadwalMisa $m) => $m->nama_perayaan ?? "Misa {$m->nama_hari} {$m->jam_format}"],
             [Warta::class, 'Warta', 'admin.warta', fn (Warta $w) => $w->judul],
             [Kegiatan::class, 'Kegiatan', 'admin.kegiatan', fn (Kegiatan $k) => $k->judul],
+            [Pastor::class, 'Pastor Paroki', 'admin.pastor-paroki', fn (Pastor $p) => "{$p->nama} ({$p->jabatan})"],
             [Pengurus::class, 'Dewan Paroki', 'admin.dewan-paroki', fn (Pengurus $p) => "{$p->nama} ({$p->jabatan})"],
             [Lingkungan::class, 'Lingkungan', 'admin.lingkungan', fn (Lingkungan $l) => $l->nama],
             [Galeri::class, 'Galeri', 'admin.galeri', fn (Galeri $g) => $g->judul],

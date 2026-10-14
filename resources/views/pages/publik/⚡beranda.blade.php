@@ -213,7 +213,7 @@ new #[Layout('layouts::publik')] class extends Component {
                        class="inline-flex items-center gap-2 rounded-full bg-marun-700 px-7 py-3 text-sm font-medium text-white shadow-lg shadow-coklat-900/20 transition hover:bg-marun-600">
                         Selengkapnya <span aria-hidden="true">&rarr;</span>
                     </a>
-                    <a href="{{ route('dewan-paroki') }}" wire:navigate class="text-sm font-medium text-marun-700 underline-offset-4 hover:underline">Dewan Paroki</a>
+                    <a href="{{ route('dewan-paroki') }}" wire:navigate class="text-sm font-medium text-marun-700 underline-offset-4 hover:underline">Pastor & Dewan Paroki</a>
                     <a href="{{ route('lingkungan') }}" wire:navigate class="text-sm font-medium text-marun-700 underline-offset-4 hover:underline">Lingkungan</a>
                 </div>
             </div>

@@ -7,19 +7,31 @@ use Illuminate\Database\Eloquent\Model;
 
 class Lingkungan extends Model
 {
-    protected $fillable = ['nama', 'wilayah', 'ketua', 'jumlah_kk', 'jadwal_doa', 'cakupan_jalan', 'urutan'];
+    /** Titik tengah peta kota Merauke [lat, lng]. */
+    public const PUSAT_PETA = [-8.4932, 140.4018];
+
+    protected $fillable = ['nama', 'wilayah', 'ketua', 'jumlah_kk', 'jadwal_doa', 'cakupan_jalan', 'batas_wilayah', 'urutan'];
 
     protected function casts(): array
     {
         return [
+            'batas_wilayah' => 'array',
             'jumlah_kk' => 'integer',
             'urutan' => 'integer',
         ];
     }
 
+    /**
+     * Lingkungan yang sudah punya arsiran batas wilayah di peta.
+     */
+    public function scopePunyaBatas(Builder $q): Builder
+    {
+        return $q->whereNotNull('batas_wilayah');
+    }
+
     public function scopeUrut(Builder $q): Builder
     {
-        return $q->orderBy('wilayah')->orderBy('urutan')->orderBy('nama');
+        return $q->orderBy('urutan')->orderBy('nama');
     }
 
     /**

@@ -17,6 +17,7 @@
                     ['route' => 'admin.jadwal-misa', 'icon' => 'calendar-days', 'label' => 'Jadwal Misa'],
                     ['route' => 'admin.warta', 'icon' => 'newspaper', 'label' => 'Warta'],
                     ['route' => 'admin.kegiatan', 'icon' => 'megaphone', 'label' => 'Kegiatan'],
+                    ['route' => 'admin.pastor-paroki', 'icon' => 'user', 'label' => 'Pastor Paroki'],
                     ['route' => 'admin.dewan-paroki', 'icon' => 'user-group', 'label' => 'Dewan Paroki'],
                     ['route' => 'admin.lingkungan', 'icon' => 'map', 'label' => 'Lingkungan'],
                     ['route' => 'admin.galeri', 'icon' => 'photo', 'label' => 'Galeri'],

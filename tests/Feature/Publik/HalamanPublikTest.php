@@ -4,6 +4,7 @@ use App\Models\Galeri;
 use App\Models\JadwalMisa;
 use App\Models\Kegiatan;
 use App\Models\Lingkungan;
+use App\Models\Pastor;
 use App\Models\Pengurus;
 use App\Models\Setting;
 use App\Models\Warta;
@@ -79,21 +80,60 @@ test('dewan paroki lists pengurus by urutan', function () {
     $this->get(route('dewan-paroki'))->assertSeeInOrder(['Ketua Paroki', 'Bendahara Paroki']);
 });
 
-test('lingkungan are grouped by wilayah with the ungrouped ones last', function () {
-    Lingkungan::create(['nama' => 'Tanpa Wilayah']);
-    Lingkungan::create(['nama' => 'Santo Petrus', 'wilayah' => 'Stasi Bampel', 'cakupan_jalan' => "Jl. Ermasu\nJl. Mandala"]);
+test('pastor paroki are shown with their story above the dewan paroki', function () {
+    Pastor::create(['nama' => 'P. Rekan', 'jabatan' => 'Pastor Rekan', 'urutan' => 2]);
+    Pastor::create([
+        'nama' => 'P. Yohanes',
+        'jabatan' => 'Pastor Paroki',
+        'tarekat' => 'MSC',
+        'mulai_bertugas' => 2023,
+        'motto' => 'Gembalakanlah domba-domba-Ku',
+        'cerita' => "Kisah masa kecil.\n\nKisah panggilan.",
+        'urutan' => 1,
+    ]);
+    Pengurus::create(['nama' => 'Ketua Dewan', 'jabatan' => 'Ketua', 'periode' => '2024-2027', 'urutan' => 1]);
+
+    $this->get(route('dewan-paroki'))
+        ->assertOk()
+        ->assertSee('Pastor &amp; Dewan Paroki', false)
+        ->assertSeeInOrder(['P. Yohanes', 'MSC', '2023', 'Gembalakanlah domba-domba-Ku', 'Kisah masa kecil.', 'Kisah panggilan.', 'P. Rekan', 'Ketua Dewan']);
+});
+
+test('lingkungan are listed by urutan without wilayah grouping', function () {
+    Lingkungan::create(['nama' => 'Santo Paulus', 'wilayah' => 'Stasi Kuprik', 'urutan' => 2]);
+    Lingkungan::create(['nama' => 'Santo Petrus', 'urutan' => 1, 'cakupan_jalan' => "Jl. Ermasu\nJl. Mandala"]);
 
     $this->get(route('lingkungan'))
         ->assertOk()
-        ->assertSeeInOrder(['Stasi Bampel', 'Santo Petrus', 'Jl. Ermasu', 'Jl. Mandala', 'Lainnya', 'Tanpa Wilayah']);
+        ->assertSeeInOrder(['Santo Petrus', 'Jl. Ermasu', 'Jl. Mandala', 'Santo Paulus'])
+        ->assertDontSee('Stasi Kuprik');
 });
 
-test('lingkungan wilayah count ignores the ungrouped "Lainnya" group', function () {
-    Lingkungan::create(['nama' => 'Tanpa Wilayah']);
-    Lingkungan::create(['nama' => 'Santo Petrus', 'wilayah' => 'Stasi Bampel']);
-    Lingkungan::create(['nama' => 'Santo Paulus', 'wilayah' => 'Stasi Kuprik']);
+test('lingkungan map shows only lingkungan with a boundary, each with its own color', function () {
+    $titik = [[-8.49, 140.40], [-8.49, 140.41], [-8.50, 140.41]];
+    $petrus = Lingkungan::create(['nama' => 'Santo Petrus', 'urutan' => 1, 'batas_wilayah' => $titik]);
+    Lingkungan::create(['nama' => 'Tanpa Peta', 'urutan' => 2]);
+    $paulus = Lingkungan::create(['nama' => 'Santo Paulus', 'urutan' => 3, 'batas_wilayah' => $titik]);
 
-    expect(Livewire::test('pages::publik.lingkungan')->instance()->jumlahWilayah)->toBe(2);
+    $halaman = Livewire::test('pages::publik.lingkungan')->instance();
+    $peta = $halaman->petaLingkungan;
+
+    expect($peta)->toHaveCount(2)
+        ->and(collect($peta)->pluck('id')->all())->toBe([$petrus->id, $paulus->id])
+        ->and($peta[0]['warna'])->toBe($halaman->warna(0))
+        ->and($peta[1]['warna'])->toBe($halaman->warna(2))
+        ->and($peta[0]['warna'])->not->toBe($peta[1]['warna'])
+        ->and($peta[0]['titik'])->toBe($titik);
+
+    $this->get(route('lingkungan'))->assertOk()->assertSee('Peta Lingkungan')->assertSee('Lihat di peta')->assertSee('assets/peta-', false);
+});
+
+test('lingkungan page does not load the map when no boundary exists', function () {
+    // Daftar @assets Livewire disimpan statis per proses; reset agar tidak terbawa dari test lain.
+    Livewire::flushState();
+    Lingkungan::create(['nama' => 'Santo Petrus']);
+
+    $this->get(route('lingkungan'))->assertOk()->assertDontSee('Peta Lingkungan')->assertDontSee('Lihat di peta')->assertDontSee('assets/peta-', false);
 });
 
 test('jadwal misa hides inactive and past misa', function () {

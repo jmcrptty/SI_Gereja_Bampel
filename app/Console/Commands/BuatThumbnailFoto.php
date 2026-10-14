@@ -5,6 +5,7 @@ namespace App\Console\Commands;
 use App\Concerns\KompresFoto;
 use App\Models\Galeri;
 use App\Models\Kegiatan;
+use App\Models\Pastor;
 use App\Models\Pengurus;
 use Illuminate\Console\Attributes\Description;
 use Illuminate\Console\Attributes\Signature;
@@ -28,7 +29,7 @@ class BuatThumbnailFoto extends Command
         $disk = Storage::disk('public');
         $dibuat = 0;
 
-        foreach ([Galeri::class, Kegiatan::class, Pengurus::class] as $model) {
+        foreach ([Galeri::class, Kegiatan::class, Pastor::class, Pengurus::class] as $model) {
             $model::query()->whereNotNull('foto')->each(function ($data) use ($model, $disk, &$dibuat) {
                 $pathKecil = $model::pathKecil($data->foto);
 

@@ -6,6 +6,7 @@ use App\Models\Galeri;
 use App\Models\JadwalMisa;
 use App\Models\Kegiatan;
 use App\Models\Lingkungan;
+use App\Models\Pastor;
 use App\Models\Pengurus;
 use App\Models\Setting;
 use App\Models\Warta;
@@ -63,6 +64,17 @@ class ContohDataSeeder extends Seeder
         $this->kegiatan();
         $this->warta();
         $this->galeri();
+
+        Pastor::firstOrCreate(['jabatan' => 'Pastor Paroki'], [
+            'nama' => 'P. Nama Pastor Paroki',
+            'tarekat' => 'MSC',
+            'asal' => 'Kei, Maluku Tenggara',
+            'tanggal_tahbisan' => '2010-08-15',
+            'mulai_bertugas' => 2023,
+            'motto' => 'Bukan aku, tetapi Kristus yang hidup di dalam aku (Gal 2:20)',
+            'cerita' => "Contoh kisah perkenalan pastor paroki. Ganti dengan cerita latar belakang keluarga, masa kecil, dan awal panggilan.\n\nContoh riwayat pendidikan seminari dan tahbisan imamat, lalu tempat-tempat tugas sebelum datang ke Merauke.\n\nContoh harapan pastor bagi umat paroki.",
+            'urutan' => 1,
+        ]);
 
         foreach ([['Ketua Dewan Paroki', 1], ['Wakil Ketua', 2], ['Sekretaris', 3], ['Bendahara', 4]] as [$jabatan, $urutan]) {
             Pengurus::firstOrCreate(

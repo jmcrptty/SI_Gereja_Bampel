@@ -10,6 +10,8 @@ export default defineConfig({
                 'resources/css/app.css',
                 'resources/js/app.js',
                 'resources/js/passkeys.js',
+                // Peta lingkungan (Leaflet), hanya dimuat di halaman Lingkungan.
+                'resources/js/peta.js',
             ],
             refresh: true,
             fonts: [
